@@ -1,7 +1,7 @@
 # ohanashi-paletteについて
 こども向けお話し生成アプリ
 ジグソーパズルorレール風UI（ドラッグ＆ドロップ / クリック連結）でお話のパーツを連結したら、生成AIがお話を生成する。
-
+TEST
 
 # React + TypeScript + Vite
 
