@@ -1,3 +1,8 @@
+# ohanashi-paletteについて
+こども向けお話し生成アプリ
+ジグソーパズルorレール風UI（ドラッグ＆ドロップ / クリック連結）でお話のパーツを連結したら、生成AIがお話を生成する。
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
