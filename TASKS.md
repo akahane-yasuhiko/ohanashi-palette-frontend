@@ -17,9 +17,16 @@
 
 ---
 
+## Progress
+
+- Task 0-1: DONE（2026-04-09）
+- Task 0-2 以降: TODO
+
+---
+
 ## Phase 0: Project Setup
 
-### Task 0-1: Create frontend project scaffold
+### Task 0-1: Create frontend project scaffold [DONE]
 目的:
 - React + TypeScript ベースのフロントエンドを作る
 
@@ -42,7 +49,7 @@
 - TypeScript ベースのバックエンド土台を作る
 
 やること:
-- `ohanashi-palette-backend` を作成
+- `ohanashi-palette-backend` を作成（フロントと並列ディレクトリ: `../ohanashi-palette-backend/`）
 - `POST /api/story/next` を受ける最小構成を作る
 - まだ LLM 接続は不要
 - ダミー JSON を返すだけでよい
@@ -82,9 +89,10 @@
 - React Router またはシンプルな状態管理で画面遷移を実装
 - 初期版では複雑なルーティングは不要
 - 画面が順番に遷移できるようにする
+- Loading は API 呼び出しのたびに経由する（最初のステップ・続きのステップ両方）
 
 完了条件:
-- Home → Setup → Loading → Story → Ending の遷移確認ができる
+- Home → Setup → Loading → Story → Loading → Story → … → Ending の遷移確認ができる
 - 画面間の移動が最低限成立する
 
 ---
@@ -167,11 +175,9 @@
 - テーマ選択を実装する
 
 やること:
-- テーマ候補を固定で用意する
-  - train
-  - animals
-  - space
-  - magic
+- テーマ候補を固定で用意する（PROJECT.md の Theme And Keyword Catalog を正本とする）
+  - でんしゃ
+  - うみ
 - カード型 UI で1つ選べるようにする
 
 完了条件:
@@ -185,9 +191,9 @@
 - ことば選択を実装する
 
 やること:
-- 固定候補のことば一覧を用意
+- テーマごとのことば候補を用意（PROJECT.md の Theme And Keyword Catalog を正本とする）
 - 2〜3個まで選べるようにする
-- テーマ未選択時でも一旦固定候補でよい
+- 選択されたテーマに対応することば候補を表示する
 
 完了条件:
 - SetupPage でことばを複数選べる
@@ -302,10 +308,13 @@
 - session status を `ended` にする
 - EndingPage に遷移
 - current session の扱いを整理する
+- 「もういちど」は Setup 画面に戻る（テーマ・ことばを選び直す）
+- 「ホームへ」は Home 画面に戻る
 
 完了条件:
 - 物語終了時に EndingPage が出る
-- 終了後の導線がある
+- 「もういちど」で Setup に戻れる
+- 「ホームへ」で Home に戻れる
 
 ---
 
