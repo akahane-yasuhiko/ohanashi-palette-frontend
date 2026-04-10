@@ -1,0 +1,105 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Maru Gothic ProN",
+    "Yu Gothic UI", "Segoe UI", sans-serif;
+  background-color: #fff8ef;
+  color: #2d2a2a;
+  font-size: 20px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.screen {
+  min-height: 100vh;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
+.screen h1 {
+  font-size: 56px;
+  margin: 0;
+  text-align: center;
+  color: #ff6b35;
+}
+
+.screen h2 {
+  font-size: 40px;
+  margin: 0;
+  text-align: center;
+}
+
+.screen p {
+  font-size: 24px;
+  margin: 0;
+  text-align: center;
+}
+
+.story-text {
+  font-size: 32px;
+  line-height: 1.9;
+  max-width: 720px;
+  text-align: center;
+}
+
+.button-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.primary-button {
+  min-height: 88px;
+  min-width: 240px;
+  padding: 20px 44px;
+  font-size: 28px;
+  font-weight: 700;
+  font-family: inherit;
+  color: #ffffff;
+  background-color: #ff9b55;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #d97a32;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.primary-button:hover {
+  background-color: #ffa766;
+}
+
+.primary-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #d97a32;
+}
+
+.primary-button:focus-visible {
+  outline: 4px solid #4a90e2;
+  outline-offset: 4px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}

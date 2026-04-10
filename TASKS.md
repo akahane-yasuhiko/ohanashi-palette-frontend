@@ -20,7 +20,8 @@
 ## Progress
 
 - Task 0-1: DONE（2026-04-09）
-- Task 0-2 以降: TODO
+- Task 0-2: DONE（2026-04-09）
+- Task 1-1 以降: TODO
 
 ---
 
@@ -44,7 +45,7 @@
 
 ---
 
-### Task 0-2: Create backend project scaffold
+### Task 0-2: Create backend project scaffold [DONE]
 目的:
 - TypeScript ベースのバックエンド土台を作る
 
