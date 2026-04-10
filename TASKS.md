@@ -23,7 +23,8 @@
 - Task 0-2: DONE（2026-04-09）
 - Task 1-1〜1-3: DONE（2026-04-10）
 - Task 2-1〜2-3: DONE（2026-04-10）
-- Task 3-1 以降: TODO
+- Task 3-1〜3-3: DONE（2026-04-10）
+- Task 4-1 以降: TODO
 
 ---
 
@@ -173,7 +174,7 @@
 
 ## Phase 3: Setup Flow
 
-### Task 3-1: Build theme selector
+### Task 3-1: Build theme selector [DONE]
 目的:
 - テーマ選択を実装する
 
@@ -189,7 +190,7 @@
 
 ---
 
-### Task 3-2: Build keyword selector
+### Task 3-2: Build keyword selector [DONE]
 目的:
 - ことば選択を実装する
 
@@ -204,7 +205,7 @@
 
 ---
 
-### Task 3-3: Start story session from setup
+### Task 3-3: Start story session from setup [DONE]
 目的:
 - Setup からストーリー開始できるようにする
 
