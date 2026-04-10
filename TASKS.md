@@ -21,7 +21,9 @@
 
 - Task 0-1: DONE（2026-04-09）
 - Task 0-2: DONE（2026-04-09）
-- Task 1-1 以降: TODO
+- Task 1-1〜1-3: DONE（2026-04-10）
+- Task 2-1〜2-3: DONE（2026-04-10）
+- Task 3-1 以降: TODO
 
 ---
 
@@ -63,7 +65,7 @@
 
 ## Phase 1: Frontend Screen Skeleton
 
-### Task 1-1: Create page components
+### Task 1-1: Create page components [DONE]
 目的:
 - 主要画面の骨組みを作る
 
@@ -82,7 +84,7 @@
 
 ---
 
-### Task 1-2: Implement simple routing or screen switching
+### Task 1-2: Implement simple routing or screen switching [DONE]
 目的:
 - 各画面を切り替えられるようにする
 
@@ -98,7 +100,7 @@
 
 ---
 
-### Task 1-3: Build iPad-friendly layout primitives
+### Task 1-3: Build iPad-friendly layout primitives [DONE]
 目的:
 - 子ども向けの大きい UI の土台を作る
 
@@ -116,7 +118,7 @@
 
 ## Phase 2: Story Session State
 
-### Task 2-1: Define story types
+### Task 2-1: Define story types [DONE]
 目的:
 - フロントエンドで使う型を整理する
 
@@ -136,7 +138,7 @@
 
 ---
 
-### Task 2-2: Create session state utilities
+### Task 2-2: Create session state utilities [DONE]
 目的:
 - 進行中ストーリーのフロント状態を扱えるようにする
 
@@ -152,7 +154,7 @@
 
 ---
 
-### Task 2-3: Implement localStorage persistence
+### Task 2-3: Implement localStorage persistence [DONE]
 目的:
 - 中断復帰できるようにする
 
