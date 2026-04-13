@@ -25,7 +25,8 @@
 - Task 2-1〜2-3: DONE（2026-04-10）
 - Task 3-1〜3-3: DONE（2026-04-10）
 - Task 4-1〜4-3: DONE（2026-04-13）
-- Task 5-1 以降: TODO
+- Task 5-1〜5-3: DONE（2026-04-13）
+- Task 6-1 以降: TODO
 
 ---
 
@@ -272,7 +273,7 @@
 
 ## Phase 5: Story Screen Behavior
 
-### Task 5-1: Render story text and buttons
+### Task 5-1: Render story text and buttons [DONE]
 目的:
 - StoryPage を本体として成立させる
 
@@ -288,7 +289,7 @@
 
 ---
 
-### Task 5-2: Apply step updates to session history
+### Task 5-2: Apply step updates to session history [DONE]
 目的:
 - ストーリー履歴を正しく蓄積する
 
@@ -304,7 +305,7 @@
 
 ---
 
-### Task 5-3: Handle story ending
+### Task 5-3: Handle story ending [DONE]
 目的:
 - 最後まで進めたときに終了画面へ行けるようにする
 
