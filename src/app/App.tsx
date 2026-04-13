@@ -1,29 +1,23 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { HomePage } from "../pages/HomePage";
 import { SetupPage } from "../pages/SetupPage";
 import { LoadingPage } from "../pages/LoadingPage";
 import { StoryPage } from "../pages/StoryPage";
 import { EndingPage } from "../pages/EndingPage";
-import { createSession } from "../features/story/session";
-import { saveSession } from "../features/story/storage";
-import type { Theme, StorySession } from "../features/story/types";
+import { createSession, addStep, selectChoice, endSession } from "../features/story/session";
+import { saveSession, removeSession } from "../features/story/storage";
+import type { Theme, StorySession, StoryNextResponse } from "../features/story/types";
 import type { ScreenName } from "./routes";
-
-/** Phase 1 暫定: 3ステップ目で終了扱い。Phase 5 で API の isEnd に置き換え予定 */
-const DEMO_MAX_STEPS = 3;
 
 export function App() {
   const [screen, setScreen] = useState<ScreenName>("home");
-  const [stepCount, setStepCount] = useState(0);
   const [session, setSession] = useState<StorySession | null>(null);
 
+  // updater の外から現在の session を参照するための ref
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+
   const navigate = useCallback((next: ScreenName) => {
-    if (next === "loading") {
-      setStepCount((c) => c + 1);
-    }
-    if (next === "setup" || next === "home") {
-      setStepCount(0);
-    }
     setScreen(next);
   }, []);
 
@@ -37,8 +31,39 @@ export function App() {
     [navigate],
   );
 
-  const loadingDestination: ScreenName =
-    stepCount >= DEMO_MAX_STEPS ? "ending" : "story";
+  const handleStepFetched = useCallback((response: StoryNextResponse) => {
+    const prev = sessionRef.current;
+    if (!prev) return;
+
+    const withStep = addStep(prev, response);
+
+    if (response.isEnd) {
+      const ended = endSession(withStep);
+      setSession(ended);
+      removeSession();
+      setScreen("ending");
+    } else {
+      setSession(withStep);
+      saveSession(withStep);
+      setScreen("story");
+    }
+  }, []);
+
+  const handleChoice = useCallback(
+    (choiceId: string, choiceLabel: string) => {
+      const prev = sessionRef.current;
+      if (!prev) return;
+      const updated = selectChoice(prev, choiceId, choiceLabel);
+      setSession(updated);
+      saveSession(updated);
+      navigate("loading");
+    },
+    [navigate],
+  );
+
+  const handleNext = useCallback(() => {
+    navigate("loading");
+  }, [navigate]);
 
   switch (screen) {
     case "home":
@@ -46,9 +71,21 @@ export function App() {
     case "setup":
       return <SetupPage onStart={handleStart} />;
     case "loading":
-      return <LoadingPage destination={loadingDestination} navigate={navigate} />;
+      return (
+        <LoadingPage
+          session={session}
+          onStepFetched={handleStepFetched}
+          navigate={navigate}
+        />
+      );
     case "story":
-      return <StoryPage navigate={navigate} session={session} />;
+      return (
+        <StoryPage
+          session={session}
+          onChoice={handleChoice}
+          onNext={handleNext}
+        />
+      );
     case "ending":
       return <EndingPage navigate={navigate} />;
   }

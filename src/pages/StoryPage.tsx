@@ -1,24 +1,42 @@
 import { Screen } from "../components/layout/Screen";
 import { PrimaryButton } from "../components/layout/PrimaryButton";
-import type { NavigateFn } from "../app/routes";
 import type { StorySession } from "../features/story/types";
 
 type Props = {
-  navigate: NavigateFn;
   session: StorySession | null;
+  onChoice: (choiceId: string, choiceLabel: string) => void;
+  onNext: () => void;
 };
 
-export function StoryPage({ navigate, session }: Props) {
-  const themeLabel = session?.theme ?? "???";
-  const keywordList = session?.keywords.join("、") ?? "";
+export function StoryPage({ session, onChoice, onNext }: Props) {
+  const currentStep = session?.steps[session.steps.length - 1];
+
+  if (!currentStep) {
+    return (
+      <Screen>
+        <p>おはなしを よみこんでいます…</p>
+      </Screen>
+    );
+  }
 
   return (
     <Screen>
-      <p className="story-text">
-        あるひ、あかいでんしゃが もりのなかを はしっていました。
-      </p>
-      <p>テーマ: {themeLabel} ／ ことば: {keywordList}</p>
-      <PrimaryButton onClick={() => navigate("loading")}>つぎへ</PrimaryButton>
+      <p className="story-text">{currentStep.text}</p>
+
+      {currentStep.choices.length === 2 ? (
+        <div className="button-row">
+          {currentStep.choices.map((choice) => (
+            <PrimaryButton
+              key={choice.id}
+              onClick={() => onChoice(choice.id, choice.label)}
+            >
+              {choice.label}
+            </PrimaryButton>
+          ))}
+        </div>
+      ) : (
+        <PrimaryButton onClick={onNext}>つぎへ</PrimaryButton>
+      )}
     </Screen>
   );
 }

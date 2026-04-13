@@ -24,7 +24,8 @@
 - Task 1-1〜1-3: DONE（2026-04-10）
 - Task 2-1〜2-3: DONE（2026-04-10）
 - Task 3-1〜3-3: DONE（2026-04-10）
-- Task 4-1 以降: TODO
+- Task 4-1〜4-3: DONE（2026-04-13）
+- Task 5-1 以降: TODO
 
 ---
 
@@ -222,7 +223,7 @@
 
 ## Phase 4: Backend Contract and Dummy Integration
 
-### Task 4-1: Define backend request/response schema
+### Task 4-1: Define backend request/response schema [DONE]
 目的:
 - API 契約を固定する
 
@@ -238,7 +239,7 @@
 
 ---
 
-### Task 4-2: Return deterministic dummy story responses
+### Task 4-2: Return deterministic dummy story responses [DONE]
 目的:
 - LLM 未接続でもフロントから通し確認できるようにする
 
@@ -253,7 +254,7 @@
 
 ---
 
-### Task 4-3: Connect frontend to backend API
+### Task 4-3: Connect frontend to backend API [DONE]
 目的:
 - フロントとバックエンドをつなぐ
 
