@@ -358,6 +358,16 @@
 
 ## Phase 7: LLM Integration
 
+Phase 7 の固定前提:
+
+- Provider は Gemini Developer API を使う
+- モデルは `gemini-2.5-flash-lite` を使う
+- LLM 呼び出しは Cloud Run 上のバックエンド（`../ohanashi-palette-backend/`）のみで実行する
+- API キーはバックエンド環境変数で管理し、フロントエンドに公開しない
+- 月次コスト上限は 100 円以内を目標にし、超過防止のガードを実装する
+
+---
+
 ### Task 7-1: Create prompt builder
 目的:
 - LLM に渡す指示を明文化する
@@ -366,6 +376,7 @@
 - 子ども向け制約を含む prompt builder を実装
 - history, theme, keywords を反映する
 - JSON only を強く要求する
+- 1ステップを短く返すように指示し、トークン消費を抑える
 
 完了条件:
 - prompt を関数で生成できる
@@ -380,12 +391,15 @@
 やること:
 - `infra/llm/client.ts` を作る
 - モデル呼び出し関数を作る
-- API key などは env から読む
+- API key / model / timeout などは env から読む
 - 直接 route に埋め込まない
+- 既定モデルを `gemini-2.5-flash-lite` にする
+- Cloud Run 環境で動く前提（`PORT` 利用、stateless）を崩さない
 
 完了条件:
 - route が llm client を呼ぶ形になる
 - モデル実装が差し替えやすい
+- フロントエンドに秘密情報を渡していない
 
 ---
 
@@ -397,6 +411,7 @@
 - JSON 抽出処理を作る
 - response validation を通す
 - 不正なら fallback error にする
+- 応答が長すぎる場合は安全側で切り詰めるか失敗扱いにする
 
 完了条件:
 - JSON パース失敗時の扱いがある
@@ -412,10 +427,13 @@
 - dummy 実装を置き換える
 - start / continue の両方を動かす
 - 最大5ステップ程度で終わるよう prompt を調整する
+- `maxOutputTokens` 等の上限を設定してトークン暴走を防ぐ
+- 月次 100 円上限を守るための簡易ガード（上限到達時フォールバック）を入れる
 
 完了条件:
 - 実際に物語が生成される
 - フロントから end-to-end で遊べる
+- 明らかなコスト超過を防ぐ仕組みが入っている
 
 ---
 
