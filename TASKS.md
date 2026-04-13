@@ -26,7 +26,8 @@
 - Task 3-1〜3-3: DONE（2026-04-10）
 - Task 4-1〜4-3: DONE（2026-04-13）
 - Task 5-1〜5-3: DONE（2026-04-13）
-- Task 6-1 以降: TODO
+- Task 6-1〜6-2: DONE（2026-04-13）
+- Task 7-1 以降: TODO
 
 ---
 
@@ -326,7 +327,7 @@
 
 ## Phase 6: Resume Flow
 
-### Task 6-1: Show continue button on home when resumable session exists
+### Task 6-1: Show continue button on home when resumable session exists [DONE]
 目的:
 - 中断復帰を UI で使えるようにする
 
@@ -340,7 +341,7 @@
 
 ---
 
-### Task 6-2: Resume into correct story state
+### Task 6-2: Resume into correct story state [DONE]
 目的:
 - 途中から遊び直せるようにする
 

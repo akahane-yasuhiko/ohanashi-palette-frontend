@@ -12,22 +12,29 @@ export function saveSession(session: StorySession): void {
   }
 }
 
-/** localStorage からセッションを読み込む。無ければ null */
+/** localStorage からセッションを読み込む。無効データは削除する */
 export function loadSession(): StorySession | null {
+  const result = peekSession();
+  if (result === null) {
+    // raw が存在するのに null → 不正データ。クリーンアップする
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw !== null) removeSession();
+    } catch { /* ignore */ }
+  }
+  return result;
+}
+
+/** 副作用なしで localStorage のセッションを読み取る（render 内で安全に呼べる） */
+export function peekSession(): StorySession | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw === null) return null;
 
     const parsed: unknown = JSON.parse(raw);
-    if (!isValidSession(parsed)) {
-      console.warn("Invalid session in localStorage, discarding");
-      removeSession();
-      return null;
-    }
+    if (!isValidSession(parsed)) return null;
     return parsed;
   } catch {
-    console.error("Failed to load session from localStorage, discarding");
-    removeSession();
     return null;
   }
 }
