@@ -27,7 +27,8 @@
 - Task 4-1〜4-3: DONE（2026-04-13）
 - Task 5-1〜5-3: DONE（2026-04-13）
 - Task 6-1〜6-2: DONE（2026-04-13）
-- Task 7-1 以降: TODO
+- Task 7-1〜7-4: DONE（2026-04-14）
+- Task 8-1 以降: TODO
 
 ---
 
@@ -368,7 +369,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 7-1: Create prompt builder
+### Task 7-1: Create prompt builder [DONE]
 目的:
 - LLM に渡す指示を明文化する
 
@@ -384,7 +385,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 7-2: Implement LLM client wrapper
+### Task 7-2: Implement LLM client wrapper [DONE]
 目的:
 - モデル呼び出しをハンドラから分離する
 
@@ -403,7 +404,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 7-3: Parse and validate LLM JSON output
+### Task 7-3: Parse and validate LLM JSON output [DONE]
 目的:
 - LLM の気まぐれ出力を吸収する
 
@@ -419,7 +420,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 7-4: Replace dummy response with real LLM generation
+### Task 7-4: Replace dummy response with real LLM generation [DONE]
 目的:
 - 本物のストーリー生成を有効にする
 
