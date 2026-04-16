@@ -548,7 +548,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 10-1: Extend API contract for finish request
+### Task 10-1: Extend API contract for finish request [DONE]
 目的:
 - ユーザー主導で自然に締められる終了フローを作る
 
@@ -563,7 +563,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 10-2: Add optional end button after step 5
+### Task 10-2: Add optional end button after step 5 [DONE]
 目的:
 - 途中で唐突に終わらず、ユーザーが終わるタイミングを選べるようにする
 
@@ -577,7 +577,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 10-3: Enforce finish-only flow at safety cap
+### Task 10-3: Enforce finish-only flow at safety cap [DONE]
 目的:
 - 無限進行を防ぎつつ、終わり方を自然にする
 

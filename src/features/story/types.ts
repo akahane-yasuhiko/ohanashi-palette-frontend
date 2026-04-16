@@ -38,7 +38,7 @@ export type HistoryEntry = {
 
 /** POST /api/story/next リクエスト */
 export type StoryNextRequest = {
-  mode: "start" | "continue";
+  mode: "start" | "continue" | "finish";
   theme: Theme;
   keywords: string[];
   history: HistoryEntry[];

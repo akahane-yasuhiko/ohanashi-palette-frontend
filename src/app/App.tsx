@@ -9,9 +9,12 @@ import { saveSession, loadSession, removeSession } from "../features/story/stora
 import type { Theme, StorySession, StoryNextResponse } from "../features/story/types";
 import type { ScreenName } from "./routes";
 
+type PendingMode = "start" | "continue" | "finish";
+
 export function App() {
   const [screen, setScreen] = useState<ScreenName>("home");
   const [session, setSession] = useState<StorySession | null>(null);
+  const [pendingMode, setPendingMode] = useState<PendingMode>("start");
 
   const sessionRef = useRef(session);
   sessionRef.current = session;
@@ -25,6 +28,7 @@ export function App() {
       const newSession = createSession(theme, keywords);
       setSession(newSession);
       saveSession(newSession);
+      setPendingMode("start");
       navigate("loading");
     },
     [navigate],
@@ -39,9 +43,11 @@ export function App() {
     const lastStep = saved.steps[saved.steps.length - 1];
     if (!lastStep) {
       // step なし（Setup 直後）→ 最初のステップ生成
+      setPendingMode("start");
       navigate("loading");
     } else if (lastStep.choices.length === 0 || lastStep.selectedChoiceId !== null) {
       // 分岐なしステップ or 選択済み → 次ステップ生成
+      setPendingMode("continue");
       navigate("loading");
     } else {
       // 選択肢あり・未選択 → Story で選択を待つ
@@ -56,10 +62,12 @@ export function App() {
     const withStep = addStep(prev, response);
 
     if (response.isEnd) {
+      // 締め文ステップ: status=ended にしたうえで Story で 1 回表示し、
+      // ユーザーが「おわりへ」を押したら Ending に進む。
       const ended = endSession(withStep);
       setSession(ended);
       removeSession();
-      setScreen("ending");
+      setScreen("story");
     } else {
       setSession(withStep);
       saveSession(withStep);
@@ -74,13 +82,24 @@ export function App() {
       const updated = selectChoice(prev, choiceId, choiceLabel);
       setSession(updated);
       saveSession(updated);
+      setPendingMode("continue");
       navigate("loading");
     },
     [navigate],
   );
 
   const handleNext = useCallback(() => {
+    setPendingMode("continue");
     navigate("loading");
+  }, [navigate]);
+
+  const handleFinish = useCallback(() => {
+    setPendingMode("finish");
+    navigate("loading");
+  }, [navigate]);
+
+  const handleGoEnding = useCallback(() => {
+    navigate("ending");
   }, [navigate]);
 
   switch (screen) {
@@ -92,6 +111,7 @@ export function App() {
       return (
         <LoadingPage
           session={session}
+          mode={pendingMode}
           onStepFetched={handleStepFetched}
           navigate={navigate}
         />
@@ -102,6 +122,8 @@ export function App() {
           session={session}
           onChoice={handleChoice}
           onNext={handleNext}
+          onFinish={handleFinish}
+          onGoEnding={handleGoEnding}
         />
       );
     case "ending":

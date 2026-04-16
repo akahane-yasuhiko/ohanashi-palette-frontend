@@ -8,6 +8,7 @@ import type { NavigateFn } from "../app/routes";
 
 type Props = {
   session: StorySession | null;
+  mode: "start" | "continue" | "finish";
   onStepFetched: (response: StoryNextResponse) => void;
   navigate: NavigateFn;
 };
@@ -18,23 +19,29 @@ const LOADING_MESSAGES = [
   "もうすこし まってね…",
 ];
 
-export function LoadingPage({ session, onStepFetched, navigate }: Props) {
+const FINISH_LOADING_MESSAGES = [
+  "おはなしを しめくくっているよ…",
+  "もうすこしで おしまいだよ…",
+];
+
+export function LoadingPage({ session, mode, onStepFetched, navigate }: Props) {
   const [hasError, setHasError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [messageIndex, setMessageIndex] = useState(0);
 
+  const messages = mode === "finish" ? FINISH_LOADING_MESSAGES : LOADING_MESSAGES;
+
   // 文言を 2.5 秒ごとに切り替え
   useEffect(() => {
     const id = window.setInterval(() => {
-      setMessageIndex((i) => (i + 1) % LOADING_MESSAGES.length);
+      setMessageIndex((i) => (i + 1) % messages.length);
     }, 2500);
     return () => window.clearInterval(id);
-  }, []);
+  }, [messages.length]);
 
   useEffect(() => {
     if (!session) return;
 
-    const mode = session.steps.length === 0 ? "start" : "continue";
     fetchNextStep({
       mode,
       theme: session.theme,
@@ -46,7 +53,7 @@ export function LoadingPage({ session, onStepFetched, navigate }: Props) {
         console.error("fetchNextStep failed:", err);
         setHasError(true);
       });
-  }, [session, onStepFetched, retryCount]);
+  }, [session, mode, onStepFetched, retryCount]);
 
   if (hasError) {
     return (
@@ -69,7 +76,7 @@ export function LoadingPage({ session, onStepFetched, navigate }: Props) {
 
   return (
     <Screen>
-      <h2 className="loading-text">{LOADING_MESSAGES[messageIndex]}</h2>
+      <h2 className="loading-text">{messages[messageIndex]}</h2>
     </Screen>
   );
 }
