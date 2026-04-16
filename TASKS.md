@@ -28,7 +28,8 @@
 - Task 5-1〜5-3: DONE（2026-04-13）
 - Task 6-1〜6-2: DONE（2026-04-13）
 - Task 7-1〜7-4: DONE（2026-04-14）
-- Task 8-1 以降: TODO
+- Task 8-1〜8-3: DONE（2026-04-15）
+- Task 9-1 以降: TODO
 
 ---
 
@@ -233,7 +234,7 @@
 やること:
 - request validation 用 schema を作る
 - response validation 用 schema を作る
-- `start` / `continue` 両方を扱う
+- `start` / `continue` 両方を扱う（`finish` は Phase 10 で追加）
 - `history[*].selectedChoiceId` / `history[*].selectedChoiceLabel` は必須キーにし、値は `string | null` を許容する
 
 完了条件:
@@ -248,7 +249,7 @@
 
 やること:
 - `mode=start` のとき固定の最初の文を返す
-- `mode=continue` のとき history に応じて固定文を返す
+- `mode=continue` のとき history に応じて固定文を返す（`mode=finish` は Phase 10 で追加）
 - 終了ケースも作る
 
 完了条件:
@@ -427,7 +428,7 @@ Phase 7 の固定前提:
 やること:
 - dummy 実装を置き換える
 - start / continue の両方を動かす
-- 最大5ステップ程度で終わるよう prompt を調整する
+- 1ステップずつ自然につながるよう prompt を調整する（終了フロー詳細は Phase 10 で調整）
 - `maxOutputTokens` 等の上限を設定してトークン暴走を防ぐ
 - 月次 100 円上限を守るための簡易ガード（上限到達時フォールバック）を入れる
 
@@ -519,6 +520,75 @@ Phase 7 の固定前提:
 
 完了条件:
 - 親子で10回試す前の最低限の確認ができている
+
+---
+
+## Phase 10: Ending Flow Revision
+
+### Phase 10 Migration Notes（ブレ防止のための明示）
+旧仕様（廃止）:
+- `src/domain/story/buildStoryPrompt.ts` で `nextIndex >= 5` のとき `shouldEnd=true` にして自動終了を促す
+
+新仕様（採用）:
+- `mode=start` / `mode=continue` では `nextIndex` だけで終了指示しない
+- ユーザーが「おしまい」を押したときのみ `mode=finish` を送り、締め文生成を行う
+- `mode=finish` のレスポンスは `isEnd=true` / `choices=[]` を必須にする
+- UI は 5〜9 ステップで通常進行 + 「おしまい」、10 ステップ以降は「おしまい」のみ
+
+実装変更対象（最低限）:
+- `../ohanashi-palette-backend/src/domain/story/buildStoryPrompt.ts`
+- `../ohanashi-palette-backend/src/domain/story/storyTypes.ts`
+- `../ohanashi-palette-backend/src/domain/story/storySchemas.ts`
+- `../ohanashi-palette-backend/src/routes/storyNext.ts`
+- `src/features/story/types.ts`
+- `src/features/story/api.ts`
+- `src/pages/StoryPage.tsx`
+- `src/pages/LoadingPage.tsx`
+- `src/app/App.tsx`
+
+---
+
+### Task 10-1: Extend API contract for finish request
+目的:
+- ユーザー主導で自然に締められる終了フローを作る
+
+やること:
+- `mode=finish` を request schema に追加
+- `mode=finish` のときは締めの1ステップを生成する
+- `mode=finish` の response は `isEnd=true` / `choices=[]` を保証する
+
+完了条件:
+- `start` / `continue` / `finish` の3モードを受け付ける
+- `finish` リクエストで締め文を返せる
+
+---
+
+### Task 10-2: Add optional end button after step 5
+目的:
+- 途中で唐突に終わらず、ユーザーが終わるタイミングを選べるようにする
+
+やること:
+- `stepIndex` が 5〜9 かつ `isEnd=false` のとき、通常進行 UI に加えて「おしまい」ボタンを表示
+- 「おしまい」押下で Loading を経由して `mode=finish` を呼ぶ
+
+完了条件:
+- 5ステップ目以降に「おしまい」ボタンが表示される
+- 押すと締め文生成フローに進める
+
+---
+
+### Task 10-3: Enforce finish-only flow at safety cap
+目的:
+- 無限進行を防ぎつつ、終わり方を自然にする
+
+やること:
+- 安全上限を 10 ステップに設定する
+- `stepIndex` が 10 以上かつ `isEnd=false` のとき、通常進行 UI を隠して「おしまい」ボタンのみ表示
+- 締め文を Story で1回表示してから Ending に進める
+
+完了条件:
+- 10ステップ目以降は finish-only UI になる
+- 最終的に必ず Ending へ到達できる
 
 ---
 
