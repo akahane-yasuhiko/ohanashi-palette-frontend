@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Screen } from "../components/layout/Screen";
 import { PrimaryButton } from "../components/layout/PrimaryButton";
 import { fetchNextStep } from "../features/story/api";
@@ -12,13 +12,27 @@ type Props = {
   navigate: NavigateFn;
 };
 
+const LOADING_MESSAGES = [
+  "おはなしを つくってるよ…",
+  "どんな おはなしに なるかな…",
+  "もうすこし まってね…",
+];
+
 export function LoadingPage({ session, onStepFetched, navigate }: Props) {
   const [hasError, setHasError] = useState(false);
-  const called = useRef(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  // 文言を 2.5 秒ごとに切り替え
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setMessageIndex((i) => (i + 1) % LOADING_MESSAGES.length);
+    }, 2500);
+    return () => window.clearInterval(id);
+  }, []);
 
   useEffect(() => {
-    if (called.current || !session) return;
-    called.current = true;
+    if (!session) return;
 
     const mode = session.steps.length === 0 ? "start" : "continue";
     fetchNextStep({
@@ -32,20 +46,30 @@ export function LoadingPage({ session, onStepFetched, navigate }: Props) {
         console.error("fetchNextStep failed:", err);
         setHasError(true);
       });
-  }, [session, onStepFetched]);
+  }, [session, onStepFetched, retryCount]);
 
   if (hasError) {
     return (
       <Screen>
-        <p>ごめんね、もういちど やってみよう</p>
-        <PrimaryButton onClick={() => navigate("home")}>はじめにもどる</PrimaryButton>
+        <p>ごめんね、うまく いかなかったみたい</p>
+        <div className="button-row">
+          <PrimaryButton onClick={() => {
+            setHasError(false);
+            setRetryCount((c) => c + 1);
+          }}>
+            もういちど やってみる
+          </PrimaryButton>
+          <PrimaryButton onClick={() => navigate("home")}>
+            はじめに もどる
+          </PrimaryButton>
+        </div>
       </Screen>
     );
   }
 
   return (
     <Screen>
-      <h2>おはなしを つくってるよ…</h2>
+      <h2 className="loading-text">{LOADING_MESSAGES[messageIndex]}</h2>
     </Screen>
   );
 }

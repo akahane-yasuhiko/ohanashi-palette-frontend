@@ -440,7 +440,7 @@ Phase 7 の固定前提:
 
 ## Phase 8: Speech and Polishing
 
-### Task 8-1: Add read aloud button
+### Task 8-1: Add read aloud button [DONE]
 目的:
 - 子どもが本文を聞けるようにする
 
@@ -453,7 +453,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 8-2: Add loading feedback polish
+### Task 8-2: Add loading feedback polish [DONE]
 目的:
 - 子どもに無反応に見えないようにする
 
@@ -468,7 +468,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 8-3: Add friendly error UI
+### Task 8-3: Add friendly error UI [DONE]
 目的:
 - エラー時の体験を壊しにくくする
 

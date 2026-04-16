@@ -163,6 +163,44 @@ body {
   margin: 0;
 }
 
+/* 読み上げボタン */
+.speak-button {
+  min-height: 56px;
+  padding: 12px 32px;
+  font-size: 22px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #ff9b55;
+  background-color: transparent;
+  border: 3px solid #ff9b55;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.speak-button:hover {
+  background-color: #fff0e0;
+}
+
+.speak-button:active {
+  background-color: #ffe4cc;
+}
+
+.speak-button:focus-visible {
+  outline: 4px solid #4a90e2;
+  outline-offset: 4px;
+}
+
+/* Loading アニメーション */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.loading-text {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
 /* 開始ボタン無効時 */
 .primary-button:disabled {
   opacity: 0.4;
