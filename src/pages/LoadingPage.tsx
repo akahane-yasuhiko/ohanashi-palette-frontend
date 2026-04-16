@@ -24,6 +24,9 @@ const FINISH_LOADING_MESSAGES = [
   "もうすこしで おしまいだよ…",
 ];
 
+// React StrictMode (dev) の二重 mount で同一リクエストが直後に再送されるのを防ぐ。
+let lastDispatchedRequestKey: string | null = null;
+
 export function LoadingPage({ session, mode, onStepFetched, navigate }: Props) {
   const [hasError, setHasError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -40,13 +43,28 @@ export function LoadingPage({ session, mode, onStepFetched, navigate }: Props) {
   }, [messages.length]);
 
   useEffect(() => {
+    setMessageIndex(0);
+  }, [mode]);
+
+  useEffect(() => {
     if (!session) return;
+    const history = buildHistory(session);
+    const requestKey = JSON.stringify({
+      mode,
+      theme: session.theme,
+      keywords: session.keywords,
+      history,
+      retryCount,
+    });
+
+    if (requestKey === lastDispatchedRequestKey) return;
+    lastDispatchedRequestKey = requestKey;
 
     fetchNextStep({
       mode,
       theme: session.theme,
       keywords: session.keywords,
-      history: buildHistory(session),
+      history,
     })
       .then(onStepFetched)
       .catch((err: unknown) => {
