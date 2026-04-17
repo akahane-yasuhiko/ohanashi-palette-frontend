@@ -487,7 +487,7 @@ Phase 7 の固定前提:
 
 ## Phase 9: Trial Readiness
 
-### Task 9-1: Tune content constraints
+### Task 9-1: Tune content constraints [DONE]
 目的:
 - 親子で10回遊べる最低限の品質に寄せる
 
@@ -503,7 +503,7 @@ Phase 7 の固定前提:
 
 ---
 
-### Task 9-2: Manual trial checklist
+### Task 9-2: Manual trial checklist [DONE]
 目的:
 - 実際に試遊できるか最終確認する
 
