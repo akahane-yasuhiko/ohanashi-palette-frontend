@@ -31,6 +31,7 @@
 - Task 8-1〜8-3: DONE（2026-04-15）
 - Task 9-1〜9-2: DONE（2026-04-18）
 - Task 10-1〜10-3: DONE（2026-04-18）
+- Task 11-0: DONE（2026-10-24）
 
 ---
 
@@ -593,6 +594,146 @@ Phase 7 の固定前提:
 
 ---
 
+## Phase 11: Target Age And Theme Generation
+
+### Phase 11 Migration Notes（ブレ防止のための明示）
+旧方針（廃止）:
+- 対象は3〜6歳、本文はひらがな中心で 1〜3文
+- テーマは固定の2つ（でんしゃ / うみ）のみ
+- 目標は「親子で10回遊べる」
+- API は `POST /api/story/next` の1本のみ
+
+新方針（採用）:
+- 対象は6〜10歳の女の子・男の子。ひとりでも親子でも遊べる
+- 目標は「子どもが繰り返し遊べる」
+- テーマは選択式オンボーディングの答えから LLM が生成する（固定テーマは「すぐ あそぶ」と生成失敗時の予備として残す）
+- 性別は聞かない
+- テーマの `textStyle`（`hiragana` / `kanji`）で本文の文体が決まる。漢字は小学 `kanjiGrade` 年生まで、2〜4文
+- API は `POST /api/story/next` と `POST /api/theme/suggest` の2本
+
+Task 9-1 / 9-2 の「親子で10回」は当時の記録として残す。
+
+---
+
+### Task 11-0: Update project policy docs [DONE]
+目的:
+- 対象年齢・目標・テーマ生成の方針を PROJECT.md / TASKS.md に反映する
+
+完了条件:
+- PROJECT.md の Target Users / Product Goals / API Contract / Story Generation Rules / Theme Generation Rules / Required Screen Flow / Definition of Done が新方針になっている
+
+---
+
+### Task 11-1: Support textStyle and age 6-10 in story API
+目的:
+- 対象年齢を6〜10歳にし、テーマの文体に合わせて本文を書き分ける
+
+やること:
+- `../ohanashi-palette-backend/src/domain/story/storySchemas.ts` に `textStyle` / `kanjiGrade` を追加
+- `buildStoryPrompt.ts` を6〜10歳向けにし、`textStyle` で文体・文数を切り替える
+- response の text 上限を `hiragana` 200文字 / `kanji` 300文字にする
+- `MAX_OUTPUT_TOKENS` の既定値を見直す（目安 500）
+
+完了条件:
+- `textStyle="hiragana"` で今と同じ長さのひらがな本文が返る
+- `textStyle="kanji"` / `kanjiGrade=2` で小学2年生までの漢字を使った 2〜4文が返る
+
+---
+
+### Task 11-2: Send textStyle from frontend
+目的:
+- フロントから文体を送れるようにする
+
+やること:
+- `Theme` 型を文字列にし、セッションに `textStyle` / `kanjiGrade` を持たせる
+- 固定テーマは `textStyle="hiragana"` / `kanjiGrade=null` で送る
+- `textStyle` がない古いセッションを読み込んでも壊れないようにする
+
+完了条件:
+- 固定テーマで今までどおり遊べる
+- 途中再開が壊れない
+
+---
+
+### Task 11-3: Add dummy theme suggest API
+目的:
+- テーマ生成の画面をつなぐ前に、API の形を固める
+
+やること:
+- `POST /api/theme/suggest` を追加し、固定ダミーの4件を返す
+- request / response を zod でバリデーションする
+- route にロジックを詰め込まない
+
+完了条件:
+- PROJECT.md の契約どおりのダミー応答が返る
+
+---
+
+### Task 11-4: Generate themes with LLM
+目的:
+- オンボーディングの答えからテーマ候補を生成する
+
+やること:
+- `buildThemePrompt.ts` を作り、Theme Generation Rules を守らせる
+- 漢字 / ひらがなテーマの数を答えの `textStyle` から決める
+- `excludeThemes` を反映する
+- 応答をバリデーションし、不正なら固定テーマで代替する
+
+完了条件:
+- 答えに合ったテーマ4件が返る
+- 「ほかの テーマ」相当のリクエストで別の候補が返る
+
+---
+
+### Task 11-5: Add onboarding screen
+目的:
+- 子どもが「すきなもの」を選択式で答えられるようにする
+
+やること:
+- 質問と選択肢（ひらがなと漢字入りを混ぜる）を決め、PROJECT.md に正本として追記する
+- 1画面1問、3〜4問の Onboarding 画面を作る
+- 漢字の範囲（小学1〜4年生、既定2年生）を選べるようにする
+- 答えを `ohanashi-palette.preferences` に保存する
+- 保存済みの場合は「まえと おなじ こたえで」と「こたえなおす」を選べる
+
+完了条件:
+- 初回は質問に答えられる
+- 2回目以降は質問を飛ばすことも、答え直すこともできる
+
+---
+
+### Task 11-6: Add theme suggest screen
+目的:
+- 生成されたテーマから選べるようにする
+
+やること:
+- Home に「すきなものから えらぶ」と「すぐ あそぶ」を置く
+- ThemeSuggest 画面でテーマ候補4件を表示する
+- 漢字テーマに「小学○年生までの漢字」を表示する（Story 画面にも表示）
+- 「ほかの テーマ」で生成し直せるようにする
+- 選んだテーマのことば候補で Setup に進む
+- Ending の「もういちど」を新しい遷移にする
+
+完了条件:
+- オンボーディングからおはなし開始まで通しで遊べる
+- 生成失敗時に固定テーマで遊べる
+
+---
+
+### Task 11-7: Trial check for repeat play
+目的:
+- 繰り返し遊べるかを確認する
+
+やること:
+- 同じ答えで5回続けて遊び、テーマと展開が毎回変わるか確認する
+- 漢字テーマで、指定の学年を超える漢字が多すぎないか確認する
+- ひとりで操作できるか確認する
+
+完了条件:
+- 子どもが繰り返し遊べる最低限の品質になっている
+
+---
+
 ## Suggested Agent Prompts
 
 以下は Claude Code / Codex に投げるときの例です。
@@ -636,7 +777,7 @@ route にロジックを詰め込まず、prompt builder / llm client / validato
 
 - 小さい構造
 - 少ない画面責務
-- 1本の API
+- 必要最小限の API（2本）
 - フロント状態保持
 - DB なし
 - 認証なし
