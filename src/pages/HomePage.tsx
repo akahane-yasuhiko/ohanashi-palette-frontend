@@ -19,7 +19,8 @@ export function HomePage({ navigate, onResume }: Props) {
     <Screen>
       <h1>おはなしパレット</h1>
       <p>すきな おはなしを つくってみよう</p>
-      <PrimaryButton onClick={() => navigate("setup")}>はじめる</PrimaryButton>
+      <PrimaryButton onClick={() => navigate("onboarding")}>すきなものから えらぶ</PrimaryButton>
+      <PrimaryButton onClick={() => navigate("setup")}>すぐ あそぶ</PrimaryButton>
       {canResume && (
         <PrimaryButton onClick={onResume}>つづきから</PrimaryButton>
       )}

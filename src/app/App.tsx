@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { HomePage } from "../pages/HomePage";
+import { OnboardingPage } from "../pages/OnboardingPage";
 import { SetupPage } from "../pages/SetupPage";
 import { LoadingPage } from "../pages/LoadingPage";
 import { StoryPage } from "../pages/StoryPage";
@@ -105,6 +106,8 @@ export function App() {
   switch (screen) {
     case "home":
       return <HomePage navigate={navigate} onResume={handleResume} />;
+    case "onboarding":
+      return <OnboardingPage onComplete={() => navigate("setup")} />;
     case "setup":
       return <SetupPage onStart={handleStart} />;
     case "loading":

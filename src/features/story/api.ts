@@ -1,10 +1,5 @@
 import type { StoryNextRequest, StoryNextResponse } from "./types";
-
-function getApiBaseUrl(): string {
-  const base = import.meta.env.VITE_API_BASE_URL?.trim() ?? "";
-  if (!base) return "";
-  return base.endsWith("/") ? base.slice(0, -1) : base;
-}
+import { getApiBaseUrl } from "../../utils/apiBaseUrl";
 
 export async function fetchNextStep(
   request: StoryNextRequest,
