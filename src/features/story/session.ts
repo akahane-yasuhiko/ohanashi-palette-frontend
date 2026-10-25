@@ -1,5 +1,6 @@
 import type {
   Theme,
+  TextStyle,
   StorySession,
   StoryStep,
   StoryNextResponse,
@@ -7,10 +8,17 @@ import type {
 } from "./types";
 
 /** 新しいセッションを生成する */
-export function createSession(theme: Theme, keywords: string[]): StorySession {
+export function createSession(
+  theme: Theme,
+  keywords: string[],
+  textStyle: TextStyle,
+  kanjiGrade: number | null,
+): StorySession {
   return {
     theme,
     keywords,
+    textStyle,
+    kanjiGrade: textStyle === "kanji" ? kanjiGrade : null,
     steps: [],
     status: "playing",
   };

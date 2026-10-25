@@ -53,6 +53,8 @@ export function LoadingPage({ session, mode, onStepFetched, navigate }: Props) {
       mode,
       theme: session.theme,
       keywords: session.keywords,
+      textStyle: session.textStyle,
+      kanjiGrade: session.kanjiGrade,
       history,
       retryCount,
     });
@@ -64,6 +66,8 @@ export function LoadingPage({ session, mode, onStepFetched, navigate }: Props) {
       mode,
       theme: session.theme,
       keywords: session.keywords,
+      textStyle: session.textStyle,
+      kanjiGrade: session.kanjiGrade,
       history,
     })
       .then(onStepFetched)

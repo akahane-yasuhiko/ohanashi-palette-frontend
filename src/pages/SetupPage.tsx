@@ -7,10 +7,16 @@ import {
   THEME_CATALOG,
   MIN_KEYWORDS,
 } from "../features/story/constants";
-import type { Theme } from "../features/story/types";
+import { loadPreferences } from "../features/theme/preferences";
+import type { TextStyle, Theme } from "../features/story/types";
 
 type Props = {
-  onStart: (theme: Theme, keywords: string[]) => void;
+  onStart: (
+    theme: Theme,
+    keywords: string[],
+    textStyle: TextStyle,
+    kanjiGrade: number | null,
+  ) => void;
 };
 
 export function SetupPage({ onStart }: Props) {
@@ -47,7 +53,10 @@ export function SetupPage({ onStart }: Props) {
 
       <PrimaryButton
         onClick={() => {
-          if (theme && canStart) onStart(theme, keywords);
+          if (!entry || !canStart) return;
+          const kanjiGrade =
+            entry.textStyle === "kanji" ? loadPreferences().kanjiGrade : null;
+          onStart(entry.id, keywords, entry.textStyle, kanjiGrade);
         }}
         disabled={!canStart}
       >

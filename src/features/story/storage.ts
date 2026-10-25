@@ -1,7 +1,6 @@
-import type { StorySession, Theme } from "./types";
+import type { StorySession } from "./types";
 import { STORAGE_KEY } from "./constants";
-
-const VALID_THEMES: readonly string[] = ["でんしゃ", "うみ"] satisfies Theme[];
+import { isValidKanjiGrade } from "../theme/preferences";
 
 /** セッションを localStorage に保存する */
 export function saveSession(session: StorySession): void {
@@ -32,8 +31,9 @@ export function peekSession(): StorySession | null {
     if (raw === null) return null;
 
     const parsed: unknown = JSON.parse(raw);
-    if (!isValidSession(parsed)) return null;
-    return parsed;
+    const migrated = migrateSession(parsed);
+    if (!isValidSession(migrated)) return null;
+    return migrated;
   } catch {
     return null;
   }
@@ -48,6 +48,14 @@ export function removeSession(): void {
   }
 }
 
+/** textStyle がない古いセッションは hiragana / kanjiGrade=null として扱う */
+function migrateSession(value: unknown): unknown {
+  if (typeof value !== "object" || value === null) return value;
+  const obj = value as Record<string, unknown>;
+  if ("textStyle" in obj) return obj;
+  return { ...obj, textStyle: "hiragana", kanjiGrade: null };
+}
+
 /** shape チェック（steps 内部の必須キーも検証） */
 function isValidSession(value: unknown): value is StorySession {
   if (typeof value !== "object" || value === null) return false;
@@ -55,7 +63,8 @@ function isValidSession(value: unknown): value is StorySession {
 
   if (
     typeof obj["theme"] !== "string" ||
-    !VALID_THEMES.includes(obj["theme"]) ||
+    obj["theme"] === "" ||
+    !isValidTextStyleAndGrade(obj["textStyle"], obj["kanjiGrade"]) ||
     !Array.isArray(obj["keywords"]) ||
     !(obj["keywords"] as unknown[]).every((k) => typeof k === "string") ||
     !Array.isArray(obj["steps"]) ||
@@ -65,6 +74,12 @@ function isValidSession(value: unknown): value is StorySession {
   }
 
   return (obj["steps"] as unknown[]).every(isValidStep);
+}
+
+function isValidTextStyleAndGrade(textStyle: unknown, kanjiGrade: unknown): boolean {
+  if (textStyle === "hiragana") return kanjiGrade === null;
+  if (textStyle === "kanji") return isValidKanjiGrade(kanjiGrade);
+  return false;
 }
 
 function isValidStep(value: unknown): boolean {

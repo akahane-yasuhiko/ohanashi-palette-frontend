@@ -6,7 +6,7 @@ import { StoryPage } from "../pages/StoryPage";
 import { EndingPage } from "../pages/EndingPage";
 import { createSession, addStep, selectChoice, endSession } from "../features/story/session";
 import { saveSession, loadSession, removeSession } from "../features/story/storage";
-import type { Theme, StorySession, StoryNextResponse } from "../features/story/types";
+import type { Theme, TextStyle, StorySession, StoryNextResponse } from "../features/story/types";
 import type { ScreenName } from "./routes";
 
 type PendingMode = "start" | "continue" | "finish";
@@ -24,8 +24,8 @@ export function App() {
   }, []);
 
   const handleStart = useCallback(
-    (theme: Theme, keywords: string[]) => {
-      const newSession = createSession(theme, keywords);
+    (theme: Theme, keywords: string[], textStyle: TextStyle, kanjiGrade: number | null) => {
+      const newSession = createSession(theme, keywords, textStyle, kanjiGrade);
       setSession(newSession);
       saveSession(newSession);
       setPendingMode("start");
