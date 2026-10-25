@@ -626,7 +626,7 @@ Task 9-1 / 9-2 の「親子で10回」は当時の記録として残す。
 
 ---
 
-### Task 11-1: Support textStyle and age 6-10 in story API
+### Task 11-1: Support textStyle and age 6-10 in story API [DONE]
 目的:
 - 対象年齢を6〜10歳にし、テーマの文体に合わせて本文を書き分ける
 
@@ -642,7 +642,7 @@ Task 9-1 / 9-2 の「親子で10回」は当時の記録として残す。
 
 ---
 
-### Task 11-2: Send textStyle from frontend
+### Task 11-2: Send textStyle from frontend [DONE]
 目的:
 - フロントから文体を送れるようにする
 
@@ -657,7 +657,7 @@ Task 9-1 / 9-2 の「親子で10回」は当時の記録として残す。
 
 ---
 
-### Task 11-3: Add dummy theme questions / suggest API
+### Task 11-3: Add dummy theme questions / suggest API [DONE]
 目的:
 - 質問生成・テーマ生成の画面をつなぐ前に、API の形を固める
 
@@ -672,7 +672,7 @@ Task 9-1 / 9-2 の「親子で10回」は当時の記録として残す。
 
 ---
 
-### Task 11-4: Generate questions and themes with LLM
+### Task 11-4: Generate questions and themes with LLM [DONE]
 目的:
 - 固定2問の答えから後半2問を、全部の答えからテーマ候補を生成する
 
@@ -691,7 +691,7 @@ Task 9-1 / 9-2 の「親子で10回」は当時の記録として残す。
 
 ---
 
-### Task 11-5: Add onboarding screen
+### Task 11-5: Add onboarding screen [DONE]
 目的:
 - 子どもが「すきなもの」を選択式で答えられるようにする
 
@@ -708,7 +708,7 @@ Task 9-1 / 9-2 の「親子で10回」は当時の記録として残す。
 
 ---
 
-### Task 11-6: Add theme suggest screen
+### Task 11-6: Add theme suggest screen [DONE]
 目的:
 - 生成されたテーマから選べるようにする
 
