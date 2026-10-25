@@ -1,6 +1,9 @@
 /** テーマ名（固定テーマの名前、または生成されたテーマの label） */
 export type Theme = string;
 
+/** テーマの出どころ（生成テーマ / 固定テーマ） */
+export type ThemeSource = "generated" | "fixed";
+
 /** 本文の文体 */
 export type TextStyle = "hiragana" | "kanji";
 
@@ -26,6 +29,7 @@ export type SessionStatus = "playing" | "ended";
 /** 進行中セッション全体 */
 export type StorySession = {
   theme: Theme;
+  themeSource: ThemeSource;
   keywords: string[];
   textStyle: TextStyle;
   /** textStyle="kanji" のとき 1〜6（小学○年生までの漢字）、"hiragana" のとき null */

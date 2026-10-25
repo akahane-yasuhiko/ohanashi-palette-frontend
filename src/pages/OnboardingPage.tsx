@@ -32,10 +32,19 @@ export function OnboardingPage({ onComplete }: Props) {
   const [answers, setAnswers] = useState<OnboardingAnswer[]>([]);
   const [generatedQuestions, setGeneratedQuestions] = useState<OnboardingQuestion[]>([]);
 
-  const handleGradeChange = useCallback((g: number) => {
-    setGrade(g);
-    savePreferences({ kanjiGrade: g });
-  }, []);
+  const handleGradeChange = useCallback(
+    (g: number) => {
+      setGrade(g);
+      savePreferences({ kanjiGrade: g });
+      // 生成2問は学年に合わせて作っているので、固定2問の答えから作り直す
+      if (phase === "generated") {
+        setAnswers((prev) => prev.slice(0, FIXED_QUESTIONS.length));
+        setGeneratedQuestions([]);
+        setPhase("loading");
+      }
+    },
+    [phase],
+  );
 
   const finish = useCallback(
     (all: OnboardingAnswer[]) => {

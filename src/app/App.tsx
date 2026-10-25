@@ -8,7 +8,6 @@ import { StoryPage } from "../pages/StoryPage";
 import { EndingPage } from "../pages/EndingPage";
 import { createSession, addStep, selectChoice, endSession } from "../features/story/session";
 import { saveSession, loadSession, removeSession } from "../features/story/storage";
-import { THEME_CATALOG } from "../features/story/constants";
 import { loadPreferences } from "../features/theme/preferences";
 import type { Theme, TextStyle, StorySession, StoryNextResponse } from "../features/story/types";
 import type { OnboardingAnswer, SuggestedTheme } from "../features/theme/types";
@@ -55,9 +54,7 @@ export function App() {
 
   /** 生成テーマで遊んだら ThemeSuggest で新しい候補を、固定テーマなら Setup へ */
   const handlePlayAgain = useCallback(() => {
-    const theme = sessionRef.current?.theme;
-    const isFixedTheme = THEME_CATALOG.some((e) => e.id === theme);
-    if (isFixedTheme) {
+    if (sessionRef.current?.themeSource !== "generated") {
       navigate("setup");
       return;
     }
@@ -72,13 +69,14 @@ export function App() {
 
   const handleStart = useCallback(
     (theme: Theme, keywords: string[], textStyle: TextStyle, kanjiGrade: number | null) => {
-      const newSession = createSession(theme, keywords, textStyle, kanjiGrade);
+      const themeSource = generatedTheme ? "generated" : "fixed";
+      const newSession = createSession(theme, themeSource, keywords, textStyle, kanjiGrade);
       setSession(newSession);
       saveSession(newSession);
       setPendingMode("start");
       navigate("loading");
     },
-    [navigate],
+    [navigate, generatedTheme],
   );
 
   const handleResume = useCallback(() => {
