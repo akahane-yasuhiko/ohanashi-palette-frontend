@@ -1,12 +1,16 @@
 import { useCallback, useRef, useState } from "react";
 import { HomePage } from "../pages/HomePage";
+import { OnboardingPage } from "../pages/OnboardingPage";
+import { ThemeSuggestPage } from "../pages/ThemeSuggestPage";
 import { SetupPage } from "../pages/SetupPage";
 import { LoadingPage } from "../pages/LoadingPage";
 import { StoryPage } from "../pages/StoryPage";
 import { EndingPage } from "../pages/EndingPage";
 import { createSession, addStep, selectChoice, endSession } from "../features/story/session";
 import { saveSession, loadSession, removeSession } from "../features/story/storage";
-import type { Theme, StorySession, StoryNextResponse } from "../features/story/types";
+import { loadPreferences } from "../features/theme/preferences";
+import type { Theme, TextStyle, StorySession, StoryNextResponse } from "../features/story/types";
+import type { OnboardingAnswer, SuggestedTheme } from "../features/theme/types";
 import type { ScreenName } from "./routes";
 
 type PendingMode = "start" | "continue" | "finish";
@@ -15,23 +19,64 @@ export function App() {
   const [screen, setScreen] = useState<ScreenName>("home");
   const [session, setSession] = useState<StorySession | null>(null);
   const [pendingMode, setPendingMode] = useState<PendingMode>("start");
+  const [answers, setAnswers] = useState<OnboardingAnswer[]>([]);
+  const [generatedTheme, setGeneratedTheme] = useState<SuggestedTheme | null>(null);
+  const [initialFixedThemeId, setInitialFixedThemeId] = useState<Theme | null>(null);
 
   const sessionRef = useRef(session);
   sessionRef.current = session;
 
   const navigate = useCallback((next: ScreenName) => {
+    if (next === "setup") {
+      // 画面から Setup へ直接行くときは固定テーマを選ぶ
+      setGeneratedTheme(null);
+      setInitialFixedThemeId(null);
+    }
     setScreen(next);
   }, []);
 
+  const handleOnboardingComplete = useCallback((all: OnboardingAnswer[]) => {
+    setAnswers(all);
+    setScreen("themeSuggest");
+  }, []);
+
+  const handleSelectGeneratedTheme = useCallback((theme: SuggestedTheme) => {
+    setGeneratedTheme(theme);
+    setInitialFixedThemeId(null);
+    setScreen("setup");
+  }, []);
+
+  const handleSelectFixedTheme = useCallback((themeId: Theme) => {
+    setGeneratedTheme(null);
+    setInitialFixedThemeId(themeId);
+    setScreen("setup");
+  }, []);
+
+  /** 生成テーマで遊んだら ThemeSuggest で新しい候補を、固定テーマなら Setup へ */
+  const handlePlayAgain = useCallback(() => {
+    if (sessionRef.current?.themeSource !== "generated") {
+      navigate("setup");
+      return;
+    }
+    const saved = answers.length > 0 ? answers : loadPreferences().answers;
+    if (!saved) {
+      setScreen("onboarding");
+      return;
+    }
+    setAnswers(saved);
+    setScreen("themeSuggest");
+  }, [answers, navigate]);
+
   const handleStart = useCallback(
-    (theme: Theme, keywords: string[]) => {
-      const newSession = createSession(theme, keywords);
+    (theme: Theme, keywords: string[], textStyle: TextStyle, kanjiGrade: number | null) => {
+      const themeSource = generatedTheme ? "generated" : "fixed";
+      const newSession = createSession(theme, themeSource, keywords, textStyle, kanjiGrade);
       setSession(newSession);
       saveSession(newSession);
       setPendingMode("start");
       navigate("loading");
     },
-    [navigate],
+    [navigate, generatedTheme],
   );
 
   const handleResume = useCallback(() => {
@@ -105,8 +150,25 @@ export function App() {
   switch (screen) {
     case "home":
       return <HomePage navigate={navigate} onResume={handleResume} />;
+    case "onboarding":
+      return <OnboardingPage onComplete={handleOnboardingComplete} />;
+    case "themeSuggest":
+      return (
+        <ThemeSuggestPage
+          answers={answers}
+          onSelectTheme={handleSelectGeneratedTheme}
+          onSelectFixedTheme={handleSelectFixedTheme}
+          navigate={navigate}
+        />
+      );
     case "setup":
-      return <SetupPage onStart={handleStart} />;
+      return (
+        <SetupPage
+          generatedTheme={generatedTheme}
+          initialFixedThemeId={initialFixedThemeId}
+          onStart={handleStart}
+        />
+      );
     case "loading":
       return (
         <LoadingPage
@@ -127,6 +189,6 @@ export function App() {
         />
       );
     case "ending":
-      return <EndingPage navigate={navigate} />;
+      return <EndingPage navigate={navigate} onPlayAgain={handlePlayAgain} />;
   }
 }

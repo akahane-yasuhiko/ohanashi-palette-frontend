@@ -237,3 +237,49 @@ body {
   outline: 4px solid #4a90e2;
   outline-offset: 4px;
 }
+
+/* 漢字の学年セレクトボックス（画面上部） */
+.grade-select {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.grade-select select {
+  min-height: 56px;
+  padding: 8px 16px;
+  font-size: 22px;
+  font-family: inherit;
+  border: 3px solid #e0d6cc;
+  border-radius: 16px;
+  background-color: #ffffff;
+}
+
+/* 漢字テーマにそえる「小学○年生までの漢字」 */
+.kanji-note {
+  display: block;
+  font-size: 18px;
+  font-weight: 500;
+  color: #7a7470;
+}
+
+.screen .kanji-note {
+  font-size: 18px;
+}
+
+.question-text {
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+}
+
+/* テーマ候補カード（テーマ名の下に「小学○年生までの漢字」） */
+.theme-card {
+  flex-direction: column;
+  min-width: 240px;
+  gap: 4px;
+}

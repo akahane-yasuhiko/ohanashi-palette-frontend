@@ -1,5 +1,11 @@
-/** テーマ識別子 */
-export type Theme = "でんしゃ" | "うみ";
+/** テーマ名（固定テーマの名前、または生成されたテーマの label） */
+export type Theme = string;
+
+/** テーマの出どころ（生成テーマ / 固定テーマ） */
+export type ThemeSource = "generated" | "fixed";
+
+/** 本文の文体 */
+export type TextStyle = "hiragana" | "kanji";
 
 /** API レスポンス内の選択肢 */
 export type StoryChoice = {
@@ -23,7 +29,11 @@ export type SessionStatus = "playing" | "ended";
 /** 進行中セッション全体 */
 export type StorySession = {
   theme: Theme;
+  themeSource: ThemeSource;
   keywords: string[];
+  textStyle: TextStyle;
+  /** textStyle="kanji" のとき 1〜6（小学○年生までの漢字）、"hiragana" のとき null */
+  kanjiGrade: number | null;
   steps: StoryStep[];
   status: SessionStatus;
 };
@@ -41,6 +51,8 @@ export type StoryNextRequest = {
   mode: "start" | "continue" | "finish";
   theme: Theme;
   keywords: string[];
+  textStyle: TextStyle;
+  kanjiGrade: number | null;
   history: HistoryEntry[];
 };
 
