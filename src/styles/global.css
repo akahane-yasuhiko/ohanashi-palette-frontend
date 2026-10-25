@@ -276,3 +276,10 @@ body {
   text-align: center;
   margin: 0;
 }
+
+/* テーマ候補カード（テーマ名の下に「小学○年生までの漢字」） */
+.theme-card {
+  flex-direction: column;
+  min-width: 240px;
+  gap: 4px;
+}

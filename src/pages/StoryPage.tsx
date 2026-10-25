@@ -41,6 +41,9 @@ export function StoryPage({ session, onChoice, onNext, onFinish, onGoEnding }: P
 
   return (
     <Screen>
+      {session?.textStyle === "kanji" && session.kanjiGrade !== null && (
+        <p className="kanji-note">小学{session.kanjiGrade}年生までの漢字</p>
+      )}
       <p className="story-text">{text}</p>
 
       <button
